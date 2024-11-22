@@ -25,7 +25,7 @@ post {
         echo "this section runs always"
     }
 
-    sucess{
+    success{
         echo "this section runs when pipeline success"
     }
     failure{
