@@ -3,10 +3,10 @@ pipeline {
         label 'AGENT-1'
     }
     options {
-                // Timeout counter starts BEFORE agent is allocated
-                timeout(time: 10, unit: 'MINUTES')
-                disableConcurrentBuilds()
-                //retry(1)
+        // Timeout counter starts BEFORE agent is allocated
+        timeout(time: 10, unit: 'MINUTES')
+        disableConcurrentBuilds()
+        //retry(1)
     }
     parameters {
         string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
@@ -28,7 +28,6 @@ pipeline {
         }
         stage('Test') {
             steps { 
-
                 sh "echo this is test"
             }
         }
@@ -51,35 +50,36 @@ pipeline {
                 echo "Password: ${params.PASSWORD}"
             } 
         }
-    
 
         stage('approve'){
-            input {
-                message "Should we continue?"
-                ok "Yes, we should."
-                submitter "alice,bob"
-                parameters {
-                    string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
-                }
-
             steps {
-                echo "Hello, ${PERSON}, nice to meet you."
-            }    
+                script {
+                    def userInput = input(
+                        message: "Should we continue?",
+                        ok: "Yes, we should.",
+                        submitter: "alice,bob",
+                        parameters: [
+                            string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+                        ]
+                    )
+                    echo "Hello, ${userInput['PERSON']}, nice to meet you."
+                }
+            }
         }
+    }
+
+    post {
+        always {
+            echo "this section runs always"
+            deleteDir()
         }
 
-post {
-    always{
-        echo "this section runs always"
-        deleteDir()
-    }
+        success {
+            echo "this section runs when pipeline success"
+        }
 
-    success{
-        echo "this section runs when pipeline success"
+        failure {
+            echo "this section runs when pipeline fails"
+        }
     }
-    failure{
-        echo "this section runs when pipeline fails"
-    }
-}
-}
 }
