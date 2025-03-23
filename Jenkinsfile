@@ -75,6 +75,7 @@ pipeline {
         }
 
         success {
+            
             echo "this section runs when pipeline success"
         }
 
