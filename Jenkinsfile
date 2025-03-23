@@ -51,7 +51,7 @@ pipeline {
                 echo "Password: ${params.PASSWORD}"
             } 
         }
-    }
+    
 
         stage('approve'){
             input {
@@ -80,5 +80,6 @@ post {
     failure{
         echo "this section runs when pipeline fails"
     }
+}
 }
 }
